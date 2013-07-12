@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+	<extension point="org.eclipse.ui.actionSets">
+		<actionSet
+				label="%actionSet.label"
+				visible="true"
+				id="jp.dobes.umvalidator.actionSet">
+			<menu
+				label="%menu.label"
+				id="UmValidateMenu">
+				<separator
+					name="UmValidateGroup">
+				</separator>
+			</menu>
+			<action
+				label="%action.label.2"
+				class="jp.dobes.umvalidator.actions.MenuAction"
+				tooltip="%action.tooltip"
+				menubarPath="UmValidateMenu/UmValidateGroup"
+				id="release">
+			</action>
+			<action
+				label="%action.label.1"
+				class="jp.dobes.umvalidator.actions.MenuAction"
+				tooltip="%action.tooltip"
+				menubarPath="UmValidateMenu/UmValidateGroup"
+				toolbarPath="UmValidateGroup"
+				id="execute">
+			</action>
+		</actionSet>
+	</extension>
+	<extension point="org.eclipse.ui.editorActions">
+	</extension>
+	<extension point="org.eclipse.ui.startup">
+	</extension>
+	<extension point="org.eclipse.core.runtime.preferences">
+		<initializer class="jp.dobes.umvalidator.preference.Initializer" />
+	</extension>
+	<extension point="org.eclipse.ui.preferencePages">
+		<page
+			class="jp.dobes.umvalidator.preference.Page"
+			id="pref"
+			name="%pref.label" 
+		/>
+	</extension>
+</plugin>

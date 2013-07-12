@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %Bundle-Name.0
+Bundle-SymbolicName: jp.dobes.umvalidator;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: .
+Bundle-Activator: jp.dobes.umvalidator.Activator
+Bundle-Vendor: %Bundle-Vendor.0
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.core.resources,
+ org.eclipse.jface.text,
+ org.eclipse.ui,
+ org.eclipse.ui.console,
+ org.eclipse.ui.texteditor
+Export-Package: jp.dobes.umvalidator,
+ jp.dobes.umvalidator.actions,
+ jp.dobes.umvalidator.util
+
