@@ -9,7 +9,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
- * İ’è‰æ–Ê
+ * è¨­å®šç”»é¢
  * 
  * @author ikaruga
  *
@@ -17,7 +17,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 public class Page extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
 	/**
-	 * ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+	 * ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
 	 */
 	public Page(){
 		super(GRID);
@@ -31,31 +31,31 @@ public class Page extends FieldEditorPreferencePage implements IWorkbenchPrefere
 	@Override
 	protected void createFieldEditors() {
 		addField(new BooleanFieldEditor(
-			Initializer.IS_OUT_CONSOLE, "ƒoƒŠƒf[ƒgŒ‹‰Ê‚ğƒRƒ“ƒ\[ƒ‹‚Éo—Í‚·‚éB", getFieldEditorParent()
+			Initializer.IS_OUT_CONSOLE, "ãƒãƒªãƒ‡ãƒ¼ãƒˆçµæœã‚’ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«å‡ºåŠ›ã™ã‚‹ã€‚", getFieldEditorParent()
 		));
 		addField(new BooleanFieldEditor(
-			Initializer.IS_DETECT_MBSPACE, "‘SŠpƒXƒy[ƒX‚ğŒŸo‚·‚éB", getFieldEditorParent()
+			Initializer.IS_DETECT_MBSPACE, "å…¨è§’ã‚¹ãƒšãƒ¼ã‚¹ã‚’æ¤œå‡ºã™ã‚‹ã€‚", getFieldEditorParent()
 		));
 		addField(new BooleanFieldEditor(
-			Initializer.IS_DETECT_TAB, "ƒ^ƒu‚ğŒŸo‚·‚éB", getFieldEditorParent()
+			Initializer.IS_DETECT_TAB, "ã‚¿ãƒ–ã‚’æ¤œå‡ºã™ã‚‹ã€‚", getFieldEditorParent()
 		));
 		addField(new BooleanFieldEditor(
-			Initializer.IS_DETECT_VARNAME_CAMEL, "ƒLƒƒƒƒ‹‹L–@‚ğŒŸo‚·‚éB", getFieldEditorParent()
+			Initializer.IS_DETECT_VARNAME_CAMEL, "ã‚­ãƒ£ãƒ¡ãƒ«è¨˜æ³•ã‚’æ¤œå‡ºã™ã‚‹ã€‚", getFieldEditorParent()
 		));
 		addField(new BooleanFieldEditor(
-			Initializer.IS_DETECT_VARNAME_USCORE, "ƒAƒ“ƒ_[ƒXƒRƒA‹L–@‚ğŒŸo‚·‚éB", getFieldEditorParent()
+			Initializer.IS_DETECT_VARNAME_USCORE, "ã‚¢ãƒ³ãƒ€ãƒ¼ã‚¹ã‚³ã‚¢è¨˜æ³•ã‚’æ¤œå‡ºã™ã‚‹ã€‚", getFieldEditorParent()
 		));
 		addField(new BooleanFieldEditor(
-			Initializer.IS_DETECT_CRLF, "‰üsƒR[ƒhCRLF‚ğŒŸo‚·‚éB", getFieldEditorParent()
+			Initializer.IS_DETECT_CRLF, "æ”¹è¡Œã‚³ãƒ¼ãƒ‰CRLFã‚’æ¤œå‡ºã™ã‚‹ã€‚", getFieldEditorParent()
 		));
 		addField(new BooleanFieldEditor(
-			Initializer.IS_DETECT_START_BRACKETS, "ŠJnŠ‡ŒÊ( { , [ )‚ÌŒãA‰üs‚¹‚¸‚É‹Lq‚³‚ê‚Ä‚¢‚és‚ğŒŸo‚·‚éB", getFieldEditorParent()
+			Initializer.IS_DETECT_START_BRACKETS, "é–‹å§‹æ‹¬å¼§( { , [ )ã®å¾Œã€æ”¹è¡Œã›ãšã«è¨˜è¿°ã•ã‚Œã¦ã„ã‚‹è¡Œã‚’æ¤œå‡ºã™ã‚‹ã€‚", getFieldEditorParent()
 		));
 		addField(new BooleanFieldEditor(
-			Initializer.IS_DETECT_AFTER_COMMA, "”z—ñEƒIƒuƒWƒFƒNƒg‚Ì––”ö—v‘f‚Ì––’[ƒJƒ“ƒ}( , )‚ğŒŸo‚·‚éB", getFieldEditorParent()
+			Initializer.IS_DETECT_AFTER_COMMA, "é…åˆ—ãƒ»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æœ«å°¾è¦ç´ ã®æœ«ç«¯ã‚«ãƒ³ãƒ( , )ã‚’æ¤œå‡ºã™ã‚‹ã€‚", getFieldEditorParent()
 		));
 		//addField(new BooleanFieldEditor(
-		//	Initializer.IS_DETECT_FUNCTION_RETURN, "return‚ª‘¶İ‚µ‚È‚¢function’è‹`‚ğŒŸo‚·‚éB", getFieldEditorParent()
+		//	Initializer.IS_DETECT_FUNCTION_RETURN, "returnãŒå­˜åœ¨ã—ãªã„functionå®šç¾©ã‚’æ¤œå‡ºã™ã‚‹ã€‚", getFieldEditorParent()
 		//));
 	}
 

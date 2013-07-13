@@ -18,14 +18,14 @@ import org.eclipse.jface.text.IRegion;
 public class Validator {
 
 	//Error message constants
-	private static final String ERRMSG_DETECT_MB_SPACE = "‘SŠpƒXƒy[ƒX‚ğŒŸo‚µ‚Ü‚µ‚½";
-	private static final String ERRMSG_DETECT_TAB = "ƒ^ƒu‚ğŒŸo‚µ‚Ü‚µ‚½";
-	private static final String ERRMSG_DETECT_VARNAME_CAMEL = "ƒLƒƒƒƒ‹‹L–@‚ğŒŸo‚µ‚Ü‚µ‚½";
-	private static final String ERRMSG_DETECT_VARNAME_USCORE = "ƒAƒ“ƒ_[ƒXƒRƒA‹L–@‚ğŒŸo‚µ‚Ü‚µ‚½";
-	private static final String ERRMSG_DETECT_CRLF = "‰üsƒR[ƒhCRLF‚ğŒŸo‚µ‚Ü‚µ‚½";
-	private static final String ERRMSG_STRING_AFTER_START_BRACKETS = "ŠJnŠ‡ŒÊ( { , [ )‚ÌŒãA‰üs‚¹‚¸‚É‹Lq‚³‚ê‚Ä‚¢‚és‚ğŒŸo‚µ‚Ü‚µ‚½";
-	private static final String ERRMSG_LAST_ELEMENTS_AFTER_COMMA = "”z—ñEƒIƒuƒWƒFƒNƒg‚Ì––”ö—v‘f‚Ì––’[ƒJƒ“ƒ}( , )‚ğŒŸo‚µ‚Ü‚µ‚½";
-	private static final String ERRMSG_FUNCTION_CLOSE_WITHOUT_RETURN = "return‚ª‘¶İ‚µ‚È‚¢function’è‹`‚ğŒŸo‚µ‚Ü‚µ‚½B";
+	private static final String ERRMSG_DETECT_MB_SPACE = "å…¨è§’ã‚¹ãƒšãƒ¼ã‚¹ã‚’æ¤œå‡ºã—ã¾ã—ãŸ";
+	private static final String ERRMSG_DETECT_TAB = "ã‚¿ãƒ–ã‚’æ¤œå‡ºã—ã¾ã—ãŸ";
+	private static final String ERRMSG_DETECT_VARNAME_CAMEL = "ã‚­ãƒ£ãƒ¡ãƒ«è¨˜æ³•ã‚’æ¤œå‡ºã—ã¾ã—ãŸ";
+	private static final String ERRMSG_DETECT_VARNAME_USCORE = "ã‚¢ãƒ³ãƒ€ãƒ¼ã‚¹ã‚³ã‚¢è¨˜æ³•ã‚’æ¤œå‡ºã—ã¾ã—ãŸ";
+	private static final String ERRMSG_DETECT_CRLF = "æ”¹è¡Œã‚³ãƒ¼ãƒ‰CRLFã‚’æ¤œå‡ºã—ã¾ã—ãŸ";
+	private static final String ERRMSG_STRING_AFTER_START_BRACKETS = "é–‹å§‹æ‹¬å¼§( { , [ )ã®å¾Œã€æ”¹è¡Œã›ãšã«è¨˜è¿°ã•ã‚Œã¦ã„ã‚‹è¡Œã‚’æ¤œå‡ºã—ã¾ã—ãŸ";
+	private static final String ERRMSG_LAST_ELEMENTS_AFTER_COMMA = "é…åˆ—ãƒ»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æœ«å°¾è¦ç´ ã®æœ«ç«¯ã‚«ãƒ³ãƒ( , )ã‚’æ¤œå‡ºã—ã¾ã—ãŸ";
+	private static final String ERRMSG_FUNCTION_CLOSE_WITHOUT_RETURN = "returnãŒå­˜åœ¨ã—ãªã„functionå®šç¾©ã‚’æ¤œå‡ºã—ã¾ã—ãŸã€‚";
 
 	private static WorkbenchState state;
 	private static boolean is_out_console;
@@ -47,13 +47,13 @@ public class Validator {
 
 
 	/**
-	 * –{ƒvƒ‰ƒOƒCƒ“‚ª’Ç‰Á‚µ‚½ƒ}[ƒJ[‚ğíœ‚·‚éB
+	 * æœ¬ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ãŒè¿½åŠ ã—ãŸãƒãƒ¼ã‚«ãƒ¼ã‚’å‰Šé™¤ã™ã‚‹ã€‚
 	 */
 	public void refreshMarkers(boolean isRefreshState){
 		//System.out.println("Validator.refreshMarkers");
 		Console.clear();
 
-		//ƒJƒŒƒ“ƒgƒGƒfƒBƒ^‚ªæ“¾o—ˆ‚½‚Æ‚«A–{ƒvƒ‰ƒOƒCƒ“‚ÅƒZƒbƒg‚µ‚½ƒ}[ƒJ[‚ğíœ‚·‚éB
+		//ã‚«ãƒ¬ãƒ³ãƒˆã‚¨ãƒ‡ã‚£ã‚¿ãŒå–å¾—å‡ºæ¥ãŸã¨ãã€æœ¬ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã§ã‚»ãƒƒãƒˆã—ãŸãƒãƒ¼ã‚«ãƒ¼ã‚’å‰Šé™¤ã™ã‚‹ã€‚
 		if (isRefreshState) Validator.state.refresh();
 		IFile file = Validator.state.getFile();
 		if (file == null) return;
@@ -90,11 +90,11 @@ public class Validator {
 	}
 
 	/**
-	 * ƒoƒŠƒf[ƒ^‚ğÀs‚·‚éB
+	 * ãƒãƒªãƒ‡ãƒ¼ã‚¿ã‚’å®Ÿè¡Œã™ã‚‹ã€‚
 	 */
 	public void execMarking(){
 		//System.out.println("Validator.execMarking");
-		Validator.is_working = true; //‰Ò“­ƒtƒ‰ƒO‚ğON‚É‚·‚éBƒ}[ƒJ[ƒZƒbƒg‚Écommand.preExecute‚ª‘–‚é‚±‚Æ‚ª‚ ‚é‚½‚ßB
+		Validator.is_working = true; //ç¨¼åƒãƒ•ãƒ©ã‚°ã‚’ONã«ã™ã‚‹ã€‚ãƒãƒ¼ã‚«ãƒ¼ã‚»ãƒƒãƒˆæ™‚ã«command.preExecuteãŒèµ°ã‚‹ã“ã¨ãŒã‚ã‚‹ãŸã‚ã€‚
 
 		Validator.state.refresh();
 		Console.clear();
@@ -131,10 +131,10 @@ public class Validator {
 		boolean is_detect_after_comma     = store.getBoolean(Initializer.IS_DETECT_AFTER_COMMA);
 		boolean is_detect_function_return = store.getBoolean(Initializer.IS_DETECT_FUNCTION_RETURN);
 
-		//ˆês’PˆÊ‚ÅŒŸØ‚·‚éB
+		//ä¸€è¡Œå˜ä½ã§æ¤œè¨¼ã™ã‚‹ã€‚
 		for(int i = 0; i < doc.getNumberOfLines(); i++){
 			
-			//ƒJƒŒƒ“ƒgs‚ÌˆÊ’uî•ñ‚ğæ“¾‚·‚éB
+			//ã‚«ãƒ¬ãƒ³ãƒˆè¡Œã®ä½ç½®æƒ…å ±ã‚’å–å¾—ã™ã‚‹ã€‚
 			IRegion info;
 			try {
 				info = doc.getLineInformation(i);
@@ -144,7 +144,7 @@ public class Validator {
 				continue;
 			}
 
-			//ƒJƒŒƒ“ƒgs‚Ì•¶š—ñ‚ğæ“¾‚·‚éB
+			//ã‚«ãƒ¬ãƒ³ãƒˆè¡Œã®æ–‡å­—åˆ—ã‚’å–å¾—ã™ã‚‹ã€‚
 			String linedoc;
 			try {
 				linedoc = doc.get(info.getOffset(), info.getLength());
@@ -154,7 +154,7 @@ public class Validator {
 				continue;
 			}
 			
-			//‘SŠpƒXƒy[ƒX‚ğŒŸo‚·‚éB
+			//å…¨è§’ã‚¹ãƒšãƒ¼ã‚¹ã‚’æ¤œå‡ºã™ã‚‹ã€‚
 			if (is_detect_mbspace){
 				tmpIdx = linedoc.indexOf(wspace);
 				if (tmpIdx != -1){
@@ -163,7 +163,7 @@ public class Validator {
 				}
 			}
 			
-			//ƒ^ƒu‚ğŒŸo‚·‚éB
+			//ã‚¿ãƒ–ã‚’æ¤œå‡ºã™ã‚‹ã€‚
 			if (is_detect_tab){
 				tmpIdx = linedoc.indexOf("\t");
 				if (tmpIdx != -1){
@@ -172,8 +172,8 @@ public class Validator {
 				}
 			}
 			
-			//ƒLƒƒƒƒ‹‹L–@‚ğŒŸo‚·‚éB
-			//‘å•¶š¬•¶š•¡”ˆê‚ÂˆÈã{"_"{‘å•¶š¬•¶š•¡”ˆê‚ÂˆÈã
+			//ã‚­ãƒ£ãƒ¡ãƒ«è¨˜æ³•ã‚’æ¤œå‡ºã™ã‚‹ã€‚
+			//å¤§æ–‡å­—å°æ–‡å­—è¤‡æ•°ä¸€ã¤ä»¥ä¸Šï¼‹"_"ï¼‹å¤§æ–‡å­—å°æ–‡å­—è¤‡æ•°ä¸€ã¤ä»¥ä¸Š
 			if (is_detect_varname_camel){
 				mtc = camel.matcher(linedoc);
 				if (mtc.find()){
@@ -182,12 +182,12 @@ public class Validator {
 				}
 			}
 			
-			//ƒAƒ“ƒ_[ƒXƒRƒA‹L–@‚ğŒŸo‚·‚éB
-			//¬•¶š•¡”–³‚µ‰Â{‘å•¶š•¡”ˆê‚ÂˆÈã{¬•¶š•¡”ˆê‚ÂˆÈã
+			//ã‚¢ãƒ³ãƒ€ãƒ¼ã‚¹ã‚³ã‚¢è¨˜æ³•ã‚’æ¤œå‡ºã™ã‚‹ã€‚
+			//å°æ–‡å­—è¤‡æ•°ç„¡ã—å¯ï¼‹å¤§æ–‡å­—è¤‡æ•°ä¸€ã¤ä»¥ä¸Šï¼‹å°æ–‡å­—è¤‡æ•°ä¸€ã¤ä»¥ä¸Š
 			if (is_detect_varname_uscore){
 				mtc = underscore1.matcher(linedoc);
 				if (mtc.find()){
-					mtctmp = underscore2.matcher(mtc.group()); //‘S‚Ä‘å•¶š‚Ì‹L–@‚Í’è”•\Œ»‚ÆŠÅ˜ô‚µA–³‹‚·‚éB
+					mtctmp = underscore2.matcher(mtc.group()); //å…¨ã¦å¤§æ–‡å­—ã®è¨˜æ³•ã¯å®šæ•°è¡¨ç¾ã¨çœ‹åšã—ã€ç„¡è¦–ã™ã‚‹ã€‚
 					if (mtctmp.find()){
 						this.buildMarker(file, Validator.ERRMSG_DETECT_VARNAME_USCORE, (i + 1),
 							(info.getOffset() + mtc.start()), (info.getOffset() + mtc.end() + 1));
@@ -195,7 +195,7 @@ public class Validator {
 				}
 			}
 
-			//‰üsƒR[ƒhŒŸo‚·‚éB
+			//æ”¹è¡Œã‚³ãƒ¼ãƒ‰æ¤œå‡ºã™ã‚‹ã€‚
 			if (is_detect_crlf){
 				String delimiter;
 				try {
@@ -213,7 +213,7 @@ public class Validator {
 			}
 		}
 		
-		//ŠJnŠ‡ŒÊ’¼Œã‚É‰üs‚µ‚Ä‚¢‚È‚¢‰ÓŠ‚ğŒŸo
+		//é–‹å§‹æ‹¬å¼§ç›´å¾Œã«æ”¹è¡Œã—ã¦ã„ãªã„ç®‡æ‰€ã‚’æ¤œå‡º
 		if (is_detect_start_brackets){
 			offset = 0;
 			isLoop = true;
@@ -233,7 +233,7 @@ public class Validator {
 						e1.printStackTrace();
 					}
 					
-					//“à—e—v‘f‚ª–³‚¢‚à‚Ì‚ÍœŠO‚·‚éB
+					//å†…å®¹è¦ç´ ãŒç„¡ã„ã‚‚ã®ã¯é™¤å¤–ã™ã‚‹ã€‚
 					//if ((tmp.equals("{}")) || (tmp.equals("[]"))){
 					if (tmp.equals("{}")){
 						continue;
@@ -247,7 +247,7 @@ public class Validator {
 			} while(isLoop);
 		}
 		
-		//”z—ñEƒIƒuƒWƒFƒNƒg‚Ì––”ö—v‘fƒJƒ“ƒ}‚ğŒŸo 
+		//é…åˆ—ãƒ»ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®æœ«å°¾è¦ç´ ã‚«ãƒ³ãƒã‚’æ¤œå‡º 
 		if (is_detect_after_comma){
 			offset = 0;
 			isLoop = true;
@@ -275,7 +275,7 @@ public class Validator {
 	}
 
 	/**
-	 * “n‚µ’lƒtƒ@ƒCƒ‹‚Éƒ}[ƒJ[‚ğ’Ç‰Á‚·‚éB
+	 * æ¸¡ã—å€¤ãƒ•ã‚¡ã‚¤ãƒ«ã«ãƒãƒ¼ã‚«ãƒ¼ã‚’è¿½åŠ ã™ã‚‹ã€‚
 	 *
 	 * @param file
 	 * @param message
@@ -292,7 +292,7 @@ public class Validator {
 
 		//System.out.println("Validator.buildMarker");
 
-		//ƒ}[ƒJ[ƒIƒuƒWƒFƒNƒg‚ğ¶¬‚·‚éB
+		//ãƒãƒ¼ã‚«ãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆã™ã‚‹ã€‚
 		IMarker mkr;
 		try {
 			mkr = file.createMarker(IMarker.PROBLEM);
@@ -302,7 +302,7 @@ public class Validator {
 			return null;
 		}
 
-		//ƒ}[ƒJ[‚ÉÚ×ƒvƒƒpƒeƒB‚ğƒZƒbƒg‚·‚éB
+		//ãƒãƒ¼ã‚«ãƒ¼ã«è©³ç´°ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã‚’ã‚»ãƒƒãƒˆã™ã‚‹ã€‚
 		try{
 			mkr.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 			mkr.setAttribute(IMarker.MESSAGE, message);
@@ -328,7 +328,7 @@ public class Validator {
 			return null;
 		}
 
-		//g—p‚µ‚È‚¢‚Æv‚í‚ê‚é‚ªAˆê‰ƒ}[ƒJ[ƒIƒuƒWƒFƒNƒg‚ğ–ß‚·B
+		//ä½¿ç”¨ã—ãªã„ã¨æ€ã‚ã‚Œã‚‹ãŒã€ä¸€å¿œãƒãƒ¼ã‚«ãƒ¼ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æˆ»ã™ã€‚
 		return mkr;
 	}
 
