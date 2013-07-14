@@ -2,6 +2,12 @@ package jp.dobes.umvalidator;
 
 import org.eclipse.osgi.util.NLS;
 
+/**
+ * 言語リソース
+ *
+ * @author ikaruga
+ *
+ */
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "jp.dobes.umvalidator.messages";
 
@@ -13,6 +19,7 @@ public class Messages extends NLS {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
+    //設定画面用
     public static String PREF_IS_OUT_CONSOLE;
     public static String PREF_IS_DETECT_MBSPACE;
     public static String PREF_IS_DETECT_TAB;
@@ -23,6 +30,7 @@ public class Messages extends NLS {
     public static String PREF_IS_DETECT_AFTER_COMMA;
     public static String PREF_IS_DETECT_FUNCTION_RETURN;
 
+    //実行結果表示用
     public static String ERRMSG_DETECT_MB_SPACE;
     public static String ERRMSG_DETECT_TAB;
     public static String ERRMSG_DETECT_VARNAME_CAMEL;

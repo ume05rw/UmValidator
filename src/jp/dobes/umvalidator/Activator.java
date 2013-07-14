@@ -13,21 +13,23 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * �N�_�N���X
+ * プラグイン開始ポイント定義
+ *
+ * @author ikaruga
  */
 public class Activator extends AbstractUIPlugin implements IStartup {
 
-	// The plug-in ID
+	//プラグインID
 	public static final String PLUGIN_ID = "jp.dobes.umvalidator"; //$NON-NLS-1$
 
-	// The shared instance
+	//自身のsharedインスタンス
 	private static Activator plugin;
 
-	//Validator instance
+	//sharedのバリデータインスタンス
 	private static Validator validator;
 
 	/**
-	 * The constructor
+	 * コンストラクタ
 	 */
 	public Activator() {
 		//System.out.println("Activator.Constructor");
@@ -53,14 +55,19 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 	}
 
 	/**
-	 * Returns the shared instance
+	 * sharedインスタンスを返す。
 	 *
-	 * @return the shared instance
+	 * @return jp.dobes.umvalidator.Activator(shared)
 	 */
 	public static Activator getDefault() {
 		return plugin;
 	}
 
+	/**
+	 * スタートアップ時の初期化関数
+	 *
+	 * ※スタートアップ時のフック定義は、plugin.xmlを参照のこと。
+	 */
 	@Override
 	public void earlyStartup() {
 		//System.out.println("Activator.earlyStartup");
@@ -72,7 +79,9 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 	}
 
 	/**
-	 * Set a listener for a particular command operations on Window.
+	 * カレントウインドウ操作時のイベントをフックする。
+	 *
+	 * ※AnyEditToolsソースから拝領。
 	 * @param commandId
 	 */
 	private void hookOnCommand(String commandId) {

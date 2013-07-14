@@ -11,7 +11,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 /**
- * Get and Keep the Window set the current state of, and documents state.
+ * カレントワークベンチ情報保持
  *
  * @author ikaruga
  */
@@ -24,16 +24,22 @@ public class WorkbenchState {
 	private IDocument document;
 	private IFile file;
 
+	/**
+	 * コンストラクタ
+	 */
 	public WorkbenchState(){
 		//System.out.println("WorkbenchState.constructor");
 
 		this.refresh();
 	}
 
+	/**
+	 * カレント状態を取得する。
+	 */
 	public void refresh(){
 		//System.out.println("WorkbenchState.refresh");
 
-		//Remove any instance of reference during holding.
+		//現在保持中の参照を初期化する。
 		this.workbench = null;
 		this.window = null;
 		this.page = null;
@@ -42,7 +48,7 @@ public class WorkbenchState {
 		this.document = null;
 		this.file = null;
 
-		//The sequentially obtained from the superior object, will continue to hold.
+		//取得可能なオブジェクトから順次取得する。
 		try{
 			this.workbench = PlatformUI.getWorkbench();
 			if (this.workbench == null) return;
@@ -69,17 +75,31 @@ public class WorkbenchState {
 		}
 	}
 
+	/**
+	 * 現在編集中のドキュメントを返す。
+	 *
+	 * @return IDocument
+	 */
 	public IDocument getDocument(){
 		//System.out.println("WorkbenchState.getDocument");
 
 		return this.document;
 	}
+
+	/**
+	 * 現在編集中のファイルを返す。
+	 *
+	 * @return IFile
+	 */
 	public IFile getFile(){
 		//System.out.println("WorkbenchState.getFile");
 
 		return this.file;
 	}
 
+	/**
+	 * インスタンスを破棄する。
+	 */
 	public void dispose(){
 		this.workbench = null;
 		this.window = null;
