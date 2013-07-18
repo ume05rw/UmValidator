@@ -379,10 +379,6 @@ public class Centrifuge {
 	 */
 	public boolean isActiveCode(int offset){
 		for(int i = 0; i < this.areas.size(); i++){
-			String type = this.areas.get(i).getTypeString();
-			int start = this.areas.get(i).getStart();
-			int end = this.areas.get(i).getEnd();
-
 			if (
 				(
 					(this.areas.get(i).getType() == Centrifuge.AreaType.COMMENT)
@@ -406,6 +402,24 @@ public class Centrifuge {
 	 */
 	public ArrayList<Area> getAreas(){
 		return this.areas;
+	}
+
+	/**
+	 * 渡し値よりもネスト深度が深い中括弧範囲を返す。
+	 *
+	 * @param depth
+	 * @return Area
+	 */
+	public ArrayList<Area> getDepthOverBrackets(int depth){
+		ArrayList<Area> result = new ArrayList<Area>();
+
+		for(Area area : this.areasBracketCurly){
+			if (area.getDepth() >= depth){
+				result.add(area);
+			}
+		}
+
+		return result;
 	}
 
 	/**

@@ -22,6 +22,9 @@ public class Initializer extends AbstractPreferenceInitializer {
 	public static String IS_DETECT_CRLF            = "IS_DETECT_CRLF";
 	public static String IS_DETECT_START_BRACKETS  = "IS_DETECT_START_BRACKETS";
 	public static String IS_DETECT_AFTER_COMMA     = "IS_DETECT_AFTER_COMMA";
+	public static String LIMIT_NEST_DEPTH          = "LIMIT_NEST_DEPTH";
+	public static String LIMIT_FUNCTION_LINES      = "LIMIT_FUNCTION_LINES";
+
 	public static String IS_DETECT_FUNCTION_RETURN = "IS_DETECT_FUNCTION_RETURN";
 
 	/**
@@ -41,6 +44,9 @@ public class Initializer extends AbstractPreferenceInitializer {
 		store.setDefault(Initializer.IS_DETECT_CRLF, "true");
 		store.setDefault(Initializer.IS_DETECT_START_BRACKETS, "false");
 		store.setDefault(Initializer.IS_DETECT_AFTER_COMMA, "true");
+		store.setDefault(Initializer.LIMIT_NEST_DEPTH, "4");
+		store.setDefault(Initializer.LIMIT_FUNCTION_LINES, "200");
+
 		store.setDefault(Initializer.IS_DETECT_FUNCTION_RETURN, "true");
 	}
 

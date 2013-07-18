@@ -1,5 +1,6 @@
 package jp.dobes.umvalidator.util;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,16 +19,6 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 
 public class Validator {
-
-	//Error message constants
-	private static final String ERRMSG_DETECT_MB_SPACE 				= Messages.ERRMSG_DETECT_MB_SPACE;
-	private static final String ERRMSG_DETECT_TAB 					= Messages.ERRMSG_DETECT_TAB;
-	private static final String ERRMSG_DETECT_VARNAME_CAMEL 			= Messages.ERRMSG_DETECT_VARNAME_CAMEL;
-	private static final String ERRMSG_DETECT_VARNAME_USCORE 		= Messages.ERRMSG_DETECT_VARNAME_USCORE;
-	private static final String ERRMSG_DETECT_CRLF 					= Messages.ERRMSG_DETECT_CRLF;
-	private static final String ERRMSG_STRING_AFTER_START_BRACKETS 	= Messages.ERRMSG_STRING_AFTER_START_BRACKETS;
-	private static final String ERRMSG_LAST_ELEMENTS_AFTER_COMMA 	= Messages.PREF_IS_DETECT_AFTER_COMMA;
-	private static final String ERRMSG_FUNCTION_CLOSE_WITHOUT_RETURN = Messages.ERRMSG_FUNCTION_CLOSE_WITHOUT_RETURN;
 
 	private static WorkbenchState state;
 	private static boolean is_out_console;
@@ -111,7 +102,7 @@ public class Validator {
 	 * バリデータを実行する。
 	 */
 	public void execMarking(){
-		//System.out.println("Validator.execMarking");
+		//System.out.println("Validator.execMarking start");
 		Validator.is_working = true; //稼働フラグをONにする。マーカーセット時にcommand.preExecuteが走ることがあるため。
 
 		//カレントワークスペース情報を更新する。
@@ -125,7 +116,8 @@ public class Validator {
 		//既存マーカーを削除する。
 		this.refreshMarkers(false);
 
-//		Centrifuge ctr = new Centrifuge(doc.get());
+		//コード解析解析を行う。
+		Centrifuge ctr = new Centrifuge(doc.get());
 //		for(Area area : ctr.getAreas()){
 //			try {
 //				System.out.println(
@@ -146,8 +138,6 @@ public class Validator {
 		int tmpIdx;
 		Matcher mtc;
 		Matcher mtctmp;
-		//Matcher mtcCamel = Pattern.compile("[a-zA-Z0-9]+_[a-zA-Z0-9]+").matcher(doc.get());
-		//Matcher mtcUnderscore = Pattern.compile("[a-z0-9]*[A-Z]+[a-zA-Z0-9]+").matcher(doc.get());
 		Pattern camel = Pattern.compile("[a-z0-9]*[A-Z]+[a-zA-Z0-9]+");
 		Pattern underscore1 = Pattern.compile("[a-zA-Z0-9]+_[a-zA-Z0-9]+");
 		Pattern underscore2 = Pattern.compile("[a-z]+");
@@ -158,7 +148,7 @@ public class Validator {
 		String tmp = "";
 
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
-		Validator.is_out_console          = store.getBoolean(Initializer.IS_OUT_CONSOLE);
+		Validator.is_out_console           = store.getBoolean(Initializer.IS_OUT_CONSOLE);
 		boolean is_detect_mbspace         = store.getBoolean(Initializer.IS_DETECT_MBSPACE);
 		boolean is_detect_tab             = store.getBoolean(Initializer.IS_DETECT_TAB);;
 		boolean is_detect_varname_camel   = store.getBoolean(Initializer.IS_DETECT_VARNAME_CAMEL);
@@ -166,6 +156,8 @@ public class Validator {
 		boolean is_detect_crlf            = store.getBoolean(Initializer.IS_DETECT_CRLF);
 		boolean is_detect_start_brackets  = store.getBoolean(Initializer.IS_DETECT_START_BRACKETS);
 		boolean is_detect_after_comma     = store.getBoolean(Initializer.IS_DETECT_AFTER_COMMA);
+
+		int limit_nest_depth               = store.getInt(Initializer.LIMIT_NEST_DEPTH);
 		boolean is_detect_function_return = store.getBoolean(Initializer.IS_DETECT_FUNCTION_RETURN);
 
 		//ドキュメントを一行ずつ取得して検証する。
@@ -195,7 +187,7 @@ public class Validator {
 			if (is_detect_mbspace){
 				tmpIdx = linedoc.indexOf(wspace);
 				if (tmpIdx != -1){
-					this.buildMarker(file, Validator.ERRMSG_DETECT_MB_SPACE, (i + 1),
+					this.buildMarker(file, Messages.ERRMSG_DETECT_MB_SPACE, (i + 1),
 						(info.getOffset() + tmpIdx), (info.getOffset() + tmpIdx + 1));
 				}
 			}
@@ -204,7 +196,7 @@ public class Validator {
 			if (is_detect_tab){
 				tmpIdx = linedoc.indexOf("\t");
 				if (tmpIdx != -1){
-					this.buildMarker(file, Validator.ERRMSG_DETECT_TAB, (i + 1),
+					this.buildMarker(file, Messages.ERRMSG_DETECT_TAB, (i + 1),
 						(info.getOffset() + tmpIdx), (info.getOffset() + tmpIdx + 1));
 				}
 			}
@@ -213,8 +205,8 @@ public class Validator {
 			//大文字小文字複数一つ以上＋"_"＋大文字小文字複数一つ以上
 			if (is_detect_varname_camel){
 				mtc = camel.matcher(linedoc);
-				if (mtc.find()){
-					this.buildMarker(file, Validator.ERRMSG_DETECT_VARNAME_CAMEL, (i + 1),
+				if (mtc.find() && ctr.isActiveCode(mtc.start())){
+					this.buildMarker(file, Messages.ERRMSG_DETECT_VARNAME_CAMEL, (i + 1),
 						(info.getOffset() + mtc.start()), (info.getOffset() + mtc.end() + 1));
 				}
 			}
@@ -223,10 +215,10 @@ public class Validator {
 			//小文字複数無し可＋大文字複数一つ以上＋小文字複数一つ以上
 			if (is_detect_varname_uscore){
 				mtc = underscore1.matcher(linedoc);
-				if (mtc.find()){
+				if (mtc.find() && ctr.isActiveCode(mtc.start())){
 					mtctmp = underscore2.matcher(mtc.group()); //全て大文字の記法は定数表現と看做し、無視する。
 					if (mtctmp.find()){
-						this.buildMarker(file, Validator.ERRMSG_DETECT_VARNAME_USCORE, (i + 1),
+						this.buildMarker(file, Messages.ERRMSG_DETECT_VARNAME_USCORE, (i + 1),
 							(info.getOffset() + mtc.start()), (info.getOffset() + mtc.end() + 1));
 					}
 				}
@@ -244,7 +236,7 @@ public class Validator {
 				}
 				if (delimiter != null) {
 					if (delimiter.equals("\r\n")){
-						this.buildMarker(file, Validator.ERRMSG_DETECT_CRLF, (i + 1), -1, -1);
+						this.buildMarker(file, Messages.ERRMSG_DETECT_CRLF, (i + 1), -1, -1);
 					}
 				}
 			}
@@ -252,9 +244,6 @@ public class Validator {
 
 		//複数行対象につき、ドキュメント全体を対象として再度ループする。
 		//開始括弧直後に改行していない箇所を検出
-		//TODO: 精度を上げたい。コメントを挟んだ場合に誤検出する。
-		//	function(){ //コメント		<-こういうのを誤検出する。
-		// 	}
 		if (is_detect_start_brackets){
 			offset = 0;
 			isLoop = true;
@@ -264,11 +253,18 @@ public class Validator {
 			do{
 				isLoop = mtc.find(offset);
 				if (isLoop){
+					offset = mtc.end();
+					if (!ctr.isActiveCode(mtc.start())) continue;
+
+					//	function(){ //コメント		<-こういうのを検出する。
+					// 	}
+					tmp = Pattern.compile("[\\s\\t]").matcher(mtc.group()).replaceAll("");
+					if ((tmp.length() >= 3) && (tmp.substring(0, 3).equals("{//"))) continue;
+
 					try {
-						this.buildMarker(file, Validator.ERRMSG_STRING_AFTER_START_BRACKETS,
+						this.buildMarker(file, Messages.ERRMSG_STRING_AFTER_START_BRACKETS,
 							doc.getLineOfOffset(mtc.start()) + 1, mtc.start(), mtc.end());
 					} catch (BadLocationException e) {}
-					offset = mtc.end();
 				}
 			} while(isLoop);
 		}
@@ -289,13 +285,23 @@ public class Validator {
 			do{
 				isLoop = mtc.find(offset);
 				if (isLoop){
+					offset = mtc.end();
+					if (!ctr.isActiveCode(mtc.start())) continue;
+
 					try {
-						this.buildMarker(file, Validator.ERRMSG_LAST_ELEMENTS_AFTER_COMMA,
+						this.buildMarker(file, Messages.ERRMSG_LAST_ELEMENTS_AFTER_COMMA,
 							doc.getLineOfOffset(mtc.start()) + 1, mtc.start(), mtc.end());
 					} catch (BadLocationException e) {}
-					offset = mtc.end();
 				}
 			} while(isLoop);
+		}
+
+		ArrayList<Centrifuge.Area> brackets = ctr.getDepthOverBrackets(limit_nest_depth);
+		for(Centrifuge.Area area : brackets){
+			try {
+				this.buildMarker(file, Messages.ERRMSG_LIMIT_NEST_DEPTH,
+					doc.getLineOfOffset(area.getStart()) + 1, area.getStart(), area.getEnd());
+			} catch (BadLocationException e) {}
 		}
 
 		camel = null;
@@ -304,6 +310,8 @@ public class Validator {
 		mtc = null;
 		mtctmp = null;
 		Validator.is_working = false;
+
+		//System.out.println("Validator.execMarking end");
 	}
 
 	/**

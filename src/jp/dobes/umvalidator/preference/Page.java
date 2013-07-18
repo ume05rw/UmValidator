@@ -5,6 +5,7 @@ import jp.dobes.umvalidator.Messages;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -71,8 +72,18 @@ public class Page extends FieldEditorPreferencePage implements IWorkbenchPrefere
 		//配列・オブジェクトの末尾要素の末端カンマ( , )を検出する。
 		addField(new BooleanFieldEditor(
 			Initializer.IS_DETECT_AFTER_COMMA, Messages.PREF_IS_DETECT_AFTER_COMMA, getFieldEditorParent()
-
 		));
+
+		//検出するネストの深さ
+		addField(new IntegerFieldEditor(
+			Initializer.LIMIT_NEST_DEPTH, Messages.PREF_LIMIT_NEST_DEPTH, getFieldEditorParent()
+		));
+
+		//検出する関数の最大行数
+		//addField(new IntegerFieldEditor(
+		//	Initializer.LIMIT_FUNCTION_LINES, Messages.PREF_LIMIT_FUNCTION_LINES, getFieldEditorParent()
+		//));
+
 		//addField(new BooleanFieldEditor(
 		//	Initializer.IS_DETECT_FUNCTION_RETURN, Messages.PREF_IS_DETECT_FUNCTION_RETURN, getFieldEditorParent()
 		//));
