@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import jp.dobes.umvalidator.Activator;
 import jp.dobes.umvalidator.preference.Initializer;
+import jp.dobes.umvalidator.util.Centrifuge.Area;
 import jp.dobes.umvalidator.Messages;
 
 import org.eclipse.core.resources.IFile;
@@ -123,6 +124,23 @@ public class Validator {
 
 		//既存マーカーを削除する。
 		this.refreshMarkers(false);
+
+//		Centrifuge ctr = new Centrifuge(doc.get());
+//		for(Area area : ctr.getAreas()){
+//			try {
+//				System.out.println(
+//					"Type: " + area.getTypeString()
+//					+ "  / Offset: " + area.getOffset()
+//					+ "  / Length: " + area.getLength()
+//					+ "  / Depath: " + area.getDepth()
+//					+ "  / Line: " + doc.getLineOfOffset(area.getOffset())
+//					+ "  / Value: 「" + doc.get().substring(area.getStart(), area.getEnd()) + "」"
+//				);
+//			} catch (BadLocationException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 
 		//バリデータ処理の変数宣言
 		int tmpIdx;
