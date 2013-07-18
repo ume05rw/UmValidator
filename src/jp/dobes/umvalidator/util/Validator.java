@@ -19,13 +19,13 @@ import org.eclipse.jface.text.IRegion;
 public class Validator {
 
 	//Error message constants
-	private static final String ERRMSG_DETECT_MB_SPACE = Messages.ERRMSG_DETECT_MB_SPACE;
-	private static final String ERRMSG_DETECT_TAB = Messages.ERRMSG_DETECT_TAB;
-	private static final String ERRMSG_DETECT_VARNAME_CAMEL = Messages.ERRMSG_DETECT_VARNAME_CAMEL;
-	private static final String ERRMSG_DETECT_VARNAME_USCORE = Messages.ERRMSG_DETECT_VARNAME_USCORE;
-	private static final String ERRMSG_DETECT_CRLF = Messages.ERRMSG_DETECT_CRLF;
-	private static final String ERRMSG_STRING_AFTER_START_BRACKETS = Messages.ERRMSG_STRING_AFTER_START_BRACKETS;
-	private static final String ERRMSG_LAST_ELEMENTS_AFTER_COMMA = Messages.PREF_IS_DETECT_AFTER_COMMA;
+	private static final String ERRMSG_DETECT_MB_SPACE 				= Messages.ERRMSG_DETECT_MB_SPACE;
+	private static final String ERRMSG_DETECT_TAB 					= Messages.ERRMSG_DETECT_TAB;
+	private static final String ERRMSG_DETECT_VARNAME_CAMEL 			= Messages.ERRMSG_DETECT_VARNAME_CAMEL;
+	private static final String ERRMSG_DETECT_VARNAME_USCORE 		= Messages.ERRMSG_DETECT_VARNAME_USCORE;
+	private static final String ERRMSG_DETECT_CRLF 					= Messages.ERRMSG_DETECT_CRLF;
+	private static final String ERRMSG_STRING_AFTER_START_BRACKETS 	= Messages.ERRMSG_STRING_AFTER_START_BRACKETS;
+	private static final String ERRMSG_LAST_ELEMENTS_AFTER_COMMA 	= Messages.PREF_IS_DETECT_AFTER_COMMA;
 	private static final String ERRMSG_FUNCTION_CLOSE_WITHOUT_RETURN = Messages.ERRMSG_FUNCTION_CLOSE_WITHOUT_RETURN;
 
 	private static WorkbenchState state;
@@ -234,34 +234,23 @@ public class Validator {
 
 		//複数行対象につき、ドキュメント全体を対象として再度ループする。
 		//開始括弧直後に改行していない箇所を検出
+		//TODO: 精度を上げたい。コメントを挟んだ場合に誤検出する。
+		//	function(){ //コメント		<-こういうのを誤検出する。
+		// 	}
 		if (is_detect_start_brackets){
 			offset = 0;
 			isLoop = true;
-			mtc = Pattern.compile("\\{.+").matcher(doc.get());
+			mtc = Pattern.compile("\\{[^\\}\\r\\n].+").matcher(doc.get());
 			tmp = "";
 
 			do{
 				isLoop = mtc.find(offset);
-
 				if (isLoop){
-					offset = mtc.end();
-
-					//合致箇所の先頭二文字を取得する。
-					try {
-						tmp = doc.get(mtc.start(), 2);
-					} catch (BadLocationException e1) {
-						e1.printStackTrace();
-					}
-
-					//要素が無いものは除外する。
-					if (tmp.equals("{}")){
-						continue;
-					}
-
 					try {
 						this.buildMarker(file, Validator.ERRMSG_STRING_AFTER_START_BRACKETS,
 							doc.getLineOfOffset(mtc.start()) + 1, mtc.start(), mtc.end());
 					} catch (BadLocationException e) {}
+					offset = mtc.end();
 				}
 			} while(isLoop);
 		}
@@ -282,11 +271,11 @@ public class Validator {
 			do{
 				isLoop = mtc.find(offset);
 				if (isLoop){
-					offset = mtc.end();
 					try {
 						this.buildMarker(file, Validator.ERRMSG_LAST_ELEMENTS_AFTER_COMMA,
 							doc.getLineOfOffset(mtc.start()) + 1, mtc.start(), mtc.end());
 					} catch (BadLocationException e) {}
+					offset = mtc.end();
 				}
 			} while(isLoop);
 		}
