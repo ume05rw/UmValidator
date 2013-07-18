@@ -96,14 +96,8 @@ public class Centrifuge {
 	 * @return String
 	 */
 	private String formatCode(String code){
-		String result = code;
-		Matcher m;
-
 		//エスケープされた「\, ', ", {, }, [, ] 」マークを削除。
-		m = Pattern.compile("\\\\|\\'|\\\"|\\{|\\}|\\[|\\]").matcher(result);
-		result = m.replaceAll("  ");
-
-		return result;
+		return Pattern.compile("\\\\|\\'|\\\"|\\{|\\}|\\[|\\]").matcher(code).replaceAll("  ");
 	}
 
 	/* */
