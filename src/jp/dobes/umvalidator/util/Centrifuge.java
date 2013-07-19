@@ -443,18 +443,17 @@ public class Centrifuge {
 		return this.areas;
 	}
 	public ArrayList<Area> getAreas(Centrifuge.AreaType type){
-		switch(type.name()){
-		case "BRACKET_CURLY":
+		if (type.name().equals("BRACKET_CURLY")){
 			return this.areasBracketCurly;
-		case "BRACKET_LARGE":
+		} else if (type.name().equals("BRACKET_LARGE")){
 			return this.areasBracketLarge;
-		case "COMMENT":
+		} else if (type.name().equals("COMMENT")){
 			return this.areasComment;
-		case "FUNCTION":
+		} else if (type.name().equals("FUNCTION")){
 			return this.areasFunction;
-		case "STRING":
+		} else if (type.name().equals("STRING")){
 			return this.areasString;
-		default:
+		} else {
 			return this.areas;
 		}
 	}

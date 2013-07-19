@@ -39,18 +39,18 @@ public class Initializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
-		store.setDefault(Initializer.IS_OUT_CONSOLE, "true");
+		store.setDefault(Initializer.IS_OUT_CONSOLE, "false");
 		store.setDefault(Initializer.IS_DETECT_MBSPACE, "true");
-		store.setDefault(Initializer.IS_DETECT_TAB, "false");
+		store.setDefault(Initializer.IS_DETECT_TAB, "true");
 		store.setDefault(Initializer.IS_DETECT_VARNAME_CAMEL, "false");
-		store.setDefault(Initializer.IS_DETECT_VARNAME_USCORE, "false");
+		store.setDefault(Initializer.IS_DETECT_VARNAME_USCORE, "true");
 		store.setDefault(Initializer.IS_DETECT_CRLF, "true");
-		store.setDefault(Initializer.IS_DETECT_START_BRACKETS, "false");
+		store.setDefault(Initializer.IS_DETECT_START_BRACKETS, "true");
 		store.setDefault(Initializer.IS_DETECT_AFTER_COMMA, "true");
 		store.setDefault(Initializer.IS_DETECT_FUNCTION_RETURN, "true");
-		store.setDefault(Initializer.IS_DETECT_NEST_DEPTH, "false");
+		store.setDefault(Initializer.IS_DETECT_NEST_DEPTH, "true");
 		store.setDefault(Initializer.LIMIT_NEST_DEPTH, "4");
-		store.setDefault(Initializer.IS_DETECT_FUNCTION_LINES, "false");
+		store.setDefault(Initializer.IS_DETECT_FUNCTION_LINES, "true");
 		store.setDefault(Initializer.LIMIT_FUNCTION_LINES, "200");
 	}
 
