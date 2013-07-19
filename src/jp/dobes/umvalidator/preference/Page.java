@@ -74,19 +74,30 @@ public class Page extends FieldEditorPreferencePage implements IWorkbenchPrefere
 			Initializer.IS_DETECT_AFTER_COMMA, Messages.PREF_IS_DETECT_AFTER_COMMA, getFieldEditorParent()
 		));
 
-		//検出するネストの深さ
+		//関数末尾行にreturnが存在しないfunction定義を検出する。
+		addField(new BooleanFieldEditor(
+			Initializer.IS_DETECT_FUNCTION_RETURN, Messages.PREF_IS_DETECT_FUNCTION_RETURN, getFieldEditorParent()
+		));
+
+		//ネスト深度超過を検出する。
+		addField(new BooleanFieldEditor(
+			Initializer.IS_DETECT_NEST_DEPTH, Messages.PREF_IS_DETECT_NEST_DEPTH, getFieldEditorParent()
+		));
+
+		//検出するネスト深度
 		addField(new IntegerFieldEditor(
-			Initializer.LIMIT_NEST_DEPTH, Messages.PREF_LIMIT_NEST_DEPTH, getFieldEditorParent()
+			Initializer.LIMIT_NEST_DEPTH, Messages.PREF_LIMIT_NEST_DEPTH, getFieldEditorParent(), 2
+		));
+
+		//関数の最大行数超過を検出する。
+		addField(new BooleanFieldEditor(
+			Initializer.IS_DETECT_FUNCTION_LINES, Messages.PREF_IS_DETECT_FUNCTION_LINES, getFieldEditorParent()
 		));
 
 		//検出する関数の最大行数
-		//addField(new IntegerFieldEditor(
-		//	Initializer.LIMIT_FUNCTION_LINES, Messages.PREF_LIMIT_FUNCTION_LINES, getFieldEditorParent()
-		//));
-
-		//addField(new BooleanFieldEditor(
-		//	Initializer.IS_DETECT_FUNCTION_RETURN, Messages.PREF_IS_DETECT_FUNCTION_RETURN, getFieldEditorParent()
-		//));
+		addField(new IntegerFieldEditor(
+			Initializer.LIMIT_FUNCTION_LINES, Messages.PREF_LIMIT_FUNCTION_LINES, getFieldEditorParent(), 3
+		));
 	}
 
 }

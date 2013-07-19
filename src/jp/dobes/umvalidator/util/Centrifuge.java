@@ -56,6 +56,12 @@ public class Centrifuge {
 		public String getTypeString(){
 			return this.type.name();
 		}
+		public boolean existOffset(int offset){
+			if ((this.getStart() <= offset) && (offset <= this.getEnd())){
+				return true;
+			}
+			return false;
+		}
 		protected void addDepth(){
 			this.depth++;
 		}
@@ -83,6 +89,7 @@ public class Centrifuge {
 	private ArrayList<Area> areas;
 	private ArrayList<Area> areasComment;
 	private ArrayList<Area> areasString;
+	private ArrayList<Area> areasNotCode;
 	private ArrayList<Area> areasBracketLarge;
 	private ArrayList<Area> areasBracketCurly;
 	private ArrayList<Area> areasFunction;
@@ -94,24 +101,41 @@ public class Centrifuge {
 	 */
 	public Centrifuge(String code){
 		this.baseCode = code;
+
+		//コード解析用前処理を行う。
 		this.formattedCode = this.formatCode(code);
+
+		//範囲要素を全て保持する配列
 		this.areas = new ArrayList<Area>();
 
+		//コメント範囲要素を取得する。
 		this.areasComment = this.getLineCommentAreas();
 		this.areasComment.addAll(this.getBlockCommentAreas());
 		this.areas.addAll(this.areasComment);
 
+		//文字列範囲要素を取得する。
 		this.areasString = this.getStringAreas();
 		this.areas.addAll(this.areasString);
 
+		//コメント・文字列範囲要素をコードとして扱わない範囲として保持する。
+		this.areasNotCode = new ArrayList<Area>();
+		this.areasNotCode.addAll(this.areasComment);
+		this.areasNotCode.addAll(this.areasString);
+
+		//大括弧範囲要素を取得する。
 		this.areasBracketLarge = this.getBracketLargeAreas();
 		this.areas.addAll(this.areasBracketLarge);
 
+		//中括弧範囲要素を取得する。
 		this.areasBracketCurly = this.getBracketCurlyAreas();
 		this.areas.addAll(this.areasBracketCurly);
 
+		//function範囲要素を取得する。
 		this.areasFunction = this.getFunctionAreas();
 		this.areas.addAll(this.areasFunction);
+
+		//if範囲要素
+		//for範囲要素
 
 		//System.out.println("Centrifuge OriginCode:");
 		//System.out.println(code);
@@ -212,7 +236,7 @@ public class Centrifuge {
 				if (endIndex != -1){
 
 					if (this.isActiveCode(mtc.start())){
-						areas.add(new Area(mtc.start(), (endIndex - mtc.start()), AreaType.STRING));
+						areas.add(new Area(mtc.start(), (endIndex - mtc.start() + 1), AreaType.STRING));
 					}
 					offset = endIndex + 1;
 				} else {
@@ -378,20 +402,35 @@ public class Centrifuge {
 	 * @return boolean
 	 */
 	public boolean isActiveCode(int offset){
-		for(int i = 0; i < this.areas.size(); i++){
-			if (
-				(
-					(this.areas.get(i).getType() == Centrifuge.AreaType.COMMENT)
-					|| (this.areas.get(i).getType() == Centrifuge.AreaType.STRING)
-				)
-				&& (
-					(this.areas.get(i).getStart() < offset)
-					&& (offset <= this.areas.get(i).getEnd())
-				)
-			){
-				return false;
+		//有効コード範囲オブジェクトの有無によって分岐
+		if (this.areasNotCode == null) {
+			//有効コード範囲が未取得のとき
+			for(int i = 0; i < this.areas.size(); i++){
+				if (
+					(
+						(this.areas.get(i).getType() == Centrifuge.AreaType.COMMENT)
+						|| (this.areas.get(i).getType() == Centrifuge.AreaType.STRING)
+					)
+					&& (
+						(this.areas.get(i).getStart() <= offset)
+						&& (offset <= this.areas.get(i).getEnd())
+					)
+				){
+					return false;
+				}
+			}
+		} else {
+			//有効コード範囲を取得済みのとき
+			for(int i = 0; i < this.areasNotCode.size(); i++){
+				if (
+					(this.areasNotCode.get(i).getStart() <= offset)
+					&& (offset <= this.areasNotCode.get(i).getEnd())
+				){
+					return false;
+				}
 			}
 		}
+
 		return true;
 	}
 
@@ -402,6 +441,22 @@ public class Centrifuge {
 	 */
 	public ArrayList<Area> getAreas(){
 		return this.areas;
+	}
+	public ArrayList<Area> getAreas(Centrifuge.AreaType type){
+		switch(type.name()){
+		case "BRACKET_CURLY":
+			return this.areasBracketCurly;
+		case "BRACKET_LARGE":
+			return this.areasBracketLarge;
+		case "COMMENT":
+			return this.areasComment;
+		case "FUNCTION":
+			return this.areasFunction;
+		case "STRING":
+			return this.areasString;
+		default:
+			return this.areas;
+		}
 	}
 
 	/**

@@ -146,6 +146,7 @@ public class Validator {
 		int offset = 0;
 		boolean isLoop = true;
 		String tmp = "";
+		ArrayList<Centrifuge.Area> areas;
 
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		Validator.is_out_console           = store.getBoolean(Initializer.IS_OUT_CONSOLE);
@@ -156,9 +157,13 @@ public class Validator {
 		boolean is_detect_crlf            = store.getBoolean(Initializer.IS_DETECT_CRLF);
 		boolean is_detect_start_brackets  = store.getBoolean(Initializer.IS_DETECT_START_BRACKETS);
 		boolean is_detect_after_comma     = store.getBoolean(Initializer.IS_DETECT_AFTER_COMMA);
-
-		int limit_nest_depth               = store.getInt(Initializer.LIMIT_NEST_DEPTH);
 		boolean is_detect_function_return = store.getBoolean(Initializer.IS_DETECT_FUNCTION_RETURN);
+		boolean is_detent_nest_depth      = store.getBoolean(Initializer.IS_DETECT_NEST_DEPTH);
+		boolean is_detect_function_lines  = store.getBoolean(Initializer.IS_DETECT_FUNCTION_LINES);
+
+		int limit_nest_depth     = store.getInt(Initializer.LIMIT_NEST_DEPTH);
+		int limit_function_lines = store.getInt(Initializer.LIMIT_FUNCTION_LINES);
+
 
 		//ドキュメントを一行ずつ取得して検証する。
 		for(int i = 0; i < doc.getNumberOfLines(); i++){
@@ -205,7 +210,7 @@ public class Validator {
 			//大文字小文字複数一つ以上＋"_"＋大文字小文字複数一つ以上
 			if (is_detect_varname_camel){
 				mtc = camel.matcher(linedoc);
-				if (mtc.find() && ctr.isActiveCode(mtc.start())){
+				if (mtc.find() && ctr.isActiveCode(info.getOffset() + mtc.start())){
 					this.buildMarker(file, Messages.ERRMSG_DETECT_VARNAME_CAMEL, (i + 1),
 						(info.getOffset() + mtc.start()), (info.getOffset() + mtc.end() + 1));
 				}
@@ -215,7 +220,7 @@ public class Validator {
 			//小文字複数無し可＋大文字複数一つ以上＋小文字複数一つ以上
 			if (is_detect_varname_uscore){
 				mtc = underscore1.matcher(linedoc);
-				if (mtc.find() && ctr.isActiveCode(mtc.start())){
+				if (mtc.find() && ctr.isActiveCode(info.getOffset() + mtc.start())){
 					mtctmp = underscore2.matcher(mtc.group()); //全て大文字の記法は定数表現と看做し、無視する。
 					if (mtctmp.find()){
 						this.buildMarker(file, Messages.ERRMSG_DETECT_VARNAME_USCORE, (i + 1),
@@ -296,12 +301,50 @@ public class Validator {
 			} while(isLoop);
 		}
 
-		ArrayList<Centrifuge.Area> brackets = ctr.getDepthOverBrackets(limit_nest_depth);
-		for(Centrifuge.Area area : brackets){
-			try {
-				this.buildMarker(file, Messages.ERRMSG_LIMIT_NEST_DEPTH,
-					doc.getLineOfOffset(area.getStart()) + 1, area.getStart(), area.getEnd());
-			} catch (BadLocationException e) {}
+		//ネスト深度を検出
+		if (is_detent_nest_depth){
+			areas = ctr.getDepthOverBrackets(limit_nest_depth);
+			for(Centrifuge.Area area : areas){
+				try {
+					this.buildMarker(file, Messages.ERRMSG_LIMIT_NEST_DEPTH,
+						doc.getLineOfOffset(area.getStart()) + 1, area.getStart(), area.getEnd());
+				} catch (BadLocationException e) {}
+			}
+		}
+
+		//関数の行数、関数末尾return を検出
+		if (is_detect_function_return || is_detect_function_lines){
+			areas = ctr.getAreas(Centrifuge.AreaType.FUNCTION);
+			int tmpidx;
+			for(Centrifuge.Area area : areas){
+
+				//関数行数検出
+				if (is_detect_function_lines){
+					try {
+						if (
+							(doc.getLineOfOffset(area.getEnd())
+							- doc.getLineOfOffset(area.getStart())
+							+ 1
+						) >= limit_function_lines){
+							this.buildMarker(file, Messages.ERRMSG_LIMIT_FUNCTION_LINES,
+								doc.getLineOfOffset(area.getStart()) + 1, area.getStart(), area.getEnd());
+						}
+					} catch (BadLocationException e) {}
+				}
+
+				//関数末尾retrun
+				if (is_detect_function_return){
+					try{
+						tmpidx = doc.getLineOfOffset(area.getEnd());
+						//関数末尾行のひとつ前の行が、関数範囲外のとき、検出対象にしない。
+						if (!area.existOffset(doc.getLineOffset(tmpidx - 1))) continue;
+						if (doc.get(doc.getLineOffset(tmpidx - 1), doc.getLineLength(tmpidx - 1)).indexOf("return") == -1){
+							this.buildMarker(file, Messages.ERRMSG_FUNCTION_CLOSE_WITHOUT_RETURN,
+								doc.getLineOfOffset(area.getStart()) + 1, area.getStart(), area.getEnd());
+						}
+					} catch (BadLocationException e) {}
+				}
+			}
 		}
 
 		camel = null;
@@ -310,6 +353,7 @@ public class Validator {
 		mtc = null;
 		mtctmp = null;
 		Validator.is_working = false;
+		areas = null;
 
 		//System.out.println("Validator.execMarking end");
 	}

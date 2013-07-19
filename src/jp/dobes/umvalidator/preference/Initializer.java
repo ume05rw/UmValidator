@@ -22,10 +22,13 @@ public class Initializer extends AbstractPreferenceInitializer {
 	public static String IS_DETECT_CRLF            = "IS_DETECT_CRLF";
 	public static String IS_DETECT_START_BRACKETS  = "IS_DETECT_START_BRACKETS";
 	public static String IS_DETECT_AFTER_COMMA     = "IS_DETECT_AFTER_COMMA";
+	public static String IS_DETECT_FUNCTION_RETURN = "IS_DETECT_FUNCTION_RETURN";
+	public static String IS_DETECT_NEST_DEPTH      = "IS_DETECT_NEST_DEPTH";
 	public static String LIMIT_NEST_DEPTH          = "LIMIT_NEST_DEPTH";
+	public static String IS_DETECT_FUNCTION_LINES  = "IS_DETECT_FUNCTION_LINES";
 	public static String LIMIT_FUNCTION_LINES      = "LIMIT_FUNCTION_LINES";
 
-	public static String IS_DETECT_FUNCTION_RETURN = "IS_DETECT_FUNCTION_RETURN";
+
 
 	/**
 	 * 設定初期化時の処理
@@ -44,10 +47,11 @@ public class Initializer extends AbstractPreferenceInitializer {
 		store.setDefault(Initializer.IS_DETECT_CRLF, "true");
 		store.setDefault(Initializer.IS_DETECT_START_BRACKETS, "false");
 		store.setDefault(Initializer.IS_DETECT_AFTER_COMMA, "true");
-		store.setDefault(Initializer.LIMIT_NEST_DEPTH, "4");
-		store.setDefault(Initializer.LIMIT_FUNCTION_LINES, "200");
-
 		store.setDefault(Initializer.IS_DETECT_FUNCTION_RETURN, "true");
+		store.setDefault(Initializer.IS_DETECT_NEST_DEPTH, "false");
+		store.setDefault(Initializer.LIMIT_NEST_DEPTH, "4");
+		store.setDefault(Initializer.IS_DETECT_FUNCTION_LINES, "false");
+		store.setDefault(Initializer.LIMIT_FUNCTION_LINES, "200");
 	}
 
 }
