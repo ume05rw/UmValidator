@@ -14,6 +14,7 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public class Initializer extends AbstractPreferenceInitializer {
 
 	//各設定項目名をstaticで定義する。
+	public static String IS_EXEC_BY_SAVING         = "IS_EXEC_BY_SAVING";
 	public static String IS_OUT_CONSOLE            = "IS_OUT_CONSOLE";
 	public static String IS_DETECT_MBSPACE         = "IS_DETECT_MBSPACE";
 	public static String IS_DETECT_TAB             = "IS_DETECT_TAB";
@@ -39,6 +40,7 @@ public class Initializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 
+		store.setDefault(Initializer.IS_EXEC_BY_SAVING, "true");
 		store.setDefault(Initializer.IS_OUT_CONSOLE, "false");
 		store.setDefault(Initializer.IS_DETECT_MBSPACE, "true");
 		store.setDefault(Initializer.IS_DETECT_TAB, "true");

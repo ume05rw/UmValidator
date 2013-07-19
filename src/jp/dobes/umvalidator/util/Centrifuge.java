@@ -78,12 +78,16 @@ public class Centrifuge {
 		STRING,
 		BRACKET_LARGE,
 		BRACKET_CURLY,
-		FUNCTION
+		FUNCTION,
+		STATEMENT
 	}
 
 	//コードドキュメント文字列
 	private String baseCode;
 	private String formattedCode;
+
+	//範囲開始中括弧位置配列
+	private ArrayList<Integer> startBruckets;
 
 	//コード範囲配列
 	private ArrayList<Area> areas;
@@ -93,6 +97,7 @@ public class Centrifuge {
 	private ArrayList<Area> areasBracketLarge;
 	private ArrayList<Area> areasBracketCurly;
 	private ArrayList<Area> areasFunction;
+	private ArrayList<Area> areasStatement;
 
 	/**
 	 * コンストラクタ
@@ -117,6 +122,9 @@ public class Centrifuge {
 		this.areasString = this.getStringAreas();
 		this.areas.addAll(this.areasString);
 
+		//中括弧開始位置を全件取得する。
+		this.startBruckets = this.getStringIndexArray("{");
+
 		//コメント・文字列範囲要素をコードとして扱わない範囲として保持する。
 		this.areasNotCode = new ArrayList<Area>();
 		this.areasNotCode.addAll(this.areasComment);
@@ -131,11 +139,30 @@ public class Centrifuge {
 		this.areas.addAll(this.areasBracketCurly);
 
 		//function範囲要素を取得する。
-		this.areasFunction = this.getFunctionAreas();
-		this.areas.addAll(this.areasFunction);
+		this.areasFunction = this.getStatementAreas("function");
+		this.areasStatement = new ArrayList<Area>();
+		this.areasStatement.addAll(this.areasFunction);
 
-		//if範囲要素
-		//for範囲要素
+		//その他制御構文範囲要素を取得する。
+		this.areasStatement.addAll(this.getStatementAreas("if"));
+		this.areasStatement.addAll(this.getStatementAreas("for"));
+		this.areasStatement.addAll(this.getStatementAreas("foreach"));
+		this.areasStatement.addAll(this.getStatementAreas("do"));
+		this.areasStatement.addAll(this.getStatementAreas("while"));
+		this.areasStatement.addAll(this.getStatementAreas("switch"));
+
+		//制御構文のネスト深度を計算する。
+		this.calcDepth(this.areasStatement);
+
+		//全ての制御構文を範囲要素配列に追加する。
+		this.areas.addAll(this.areasStatement);
+
+		//要るかな...？検討。
+		//if範囲要素を取得する。
+		//for範囲要素を取得する。
+		//do範囲要素を取得する。
+		//while範囲要素を取得する。
+		//switch範囲要素を取得する。
 
 		//System.out.println("Centrifuge OriginCode:");
 		//System.out.println(code);
@@ -151,6 +178,7 @@ public class Centrifuge {
 	 */
 	private String formatCode(String code){
 		//エスケープされた記号「\\, \', \", \{, \}, \[, \] 」マークを削除。
+		//※ドキュメント上のoffset値が変わらないように、同じ文字数の半角スペースを差し込んでいる。
 		String str = Pattern.compile("\\\\\\'|\\\\\\\"|\\\\\\{|\\\\\\}|\\\\\\[|\\\\\\]").matcher(code).replaceAll("  ");
 		str = Pattern.compile("\\\\\\\\").matcher(str).replaceAll("  ");
 
@@ -288,7 +316,8 @@ public class Centrifuge {
 	private ArrayList<Area> getBracketCurlyAreas(){
 		ArrayList<Area> areas = new ArrayList<Area>();
 
-		ArrayList<Integer> startPoints = this.getStringIndexArray("{");
+		@SuppressWarnings("unchecked")
+		ArrayList<Integer> startPoints = (ArrayList<Integer>) this.startBruckets.clone();
 		ArrayList<Integer> endPoints =  this.getStringIndexArray("}");
 		int index = -1;
 
@@ -310,6 +339,17 @@ public class Centrifuge {
 		}
 
 		//中括弧のネスト深度を計算する。
+		this.calcDepth(areas);
+
+		return areas;
+	}
+
+	/**
+	 * 渡し値範囲配列のネスト深度を計算する。
+	 *
+	 * @param ArrayList<Area>
+	 */
+	private void calcDepth(ArrayList<Area> areas){
 		for(Area ar1 : areas){
 			for(Area ar2 : areas){
 				//同一オブジェクトのときは比較しない。
@@ -323,43 +363,57 @@ public class Centrifuge {
 				}
 			}
 		}
-
-		return areas;
 	}
 
 	/**
-	 * コード文字列から関数定義部分を抽出する。
+	 * 渡し値を制御構文と見做し、その範囲を抽出する。
 	 *
+	 * @param String
 	 * @return ArrayList<Area>
 	 */
-	private ArrayList<Area> getFunctionAreas(){
+	private ArrayList<Area> getStatementAreas(String statement){
 		ArrayList<Area> areas = new ArrayList<Area>();
 
 		int offset = 0;
 		int start = 0;
+		int index;
+		Pattern alphanum = Pattern.compile("[a-zA-Z0-9]");
 
-		ArrayList<Integer> functionPoints = this.getStringIndexArray("function");
-		ArrayList<Integer> brucketPoints = this.getStringIndexArray("{");
+		ArrayList<Integer> statements = this.getStringIndexArray(statement);
 
-		//"function"文字列の個数分ループする。
-		for(int i : functionPoints){
+		//statement文字列の個数分ループする。
+		for(int i : statements){
+			offset = i + statement.length();
+
+			//検出文字列のすぐ後に記述が続いているものは、制御構文とは見做さない。
+			if (alphanum.matcher(this.formattedCode.substring(offset, offset + 1)).find()) continue;
+
 			//コードとして有効でないものはスキップする。
 			if (!this.isActiveCode(i)) continue;
 
-			//"function"文字列から最も近い位置の"{"文字列の位置を取得する。
-			offset = i + 8;
+			//statement文字列から最も近い位置の"{"文字列の位置を取得する。
 			start = Integer.MAX_VALUE;
-			for(int j : brucketPoints){
+			for(int j : this.startBruckets){
 				if (j < offset) continue;
 				if (start < j) continue;
 				if (!this.isActiveCode(j)) continue;
 				start = j;
 			}
 
+			//"{"が見つからないとき、スキップ。
+			if (start == Integer.MAX_VALUE) continue;
+
+			//開始中括弧と制御構文の間に有効なセミコロンがあるとき、範囲が存在しない構文としてスキップ。
+			//do-loopの末尾whileを対象に。
+			if (statement.equals("while")){
+				index = this.formattedCode.substring(offset, start).indexOf(";");
+				if (index != -1 && this.isActiveCode(offset + index)) continue;
+			}
+
 			//取得済みの中括弧範囲配列から、範囲が合致するものをピックアップする。
 			for(Area area : this.areasBracketCurly){
 				if (start == area.getStart()){
-					areas.add(new Area(i, (area.getEnd() - i), AreaType.FUNCTION));
+					areas.add(new Area(i, (area.getEnd() - i), AreaType.STATEMENT));
 					break;
 				}
 			}
@@ -451,6 +505,8 @@ public class Centrifuge {
 			return this.areasComment;
 		} else if (type.name().equals("FUNCTION")){
 			return this.areasFunction;
+		} else if (type.name().equals("STATEMENT")){
+			return this.areasStatement;
 		} else if (type.name().equals("STRING")){
 			return this.areasString;
 		} else {
@@ -458,16 +514,35 @@ public class Centrifuge {
 		}
 	}
 
+//  //オブジェクト定義など、無駄に引っかかるので使用しない。
+//	/**
+//	 * 渡し値よりもネスト深度が深い中括弧範囲を返す。
+//	 *
+//	 * @param depth
+//	 * @return Area
+//	 */
+//	public ArrayList<Area> getDepthOverBrackets(int depth){
+//		ArrayList<Area> result = new ArrayList<Area>();
+//
+//		for(Area area : this.areasBracketCurly){
+//			if (area.getDepth() >= depth){
+//				result.add(area);
+//			}
+//		}
+//
+//		return result;
+//	}
+
 	/**
-	 * 渡し値よりもネスト深度が深い中括弧範囲を返す。
+	 * 渡し値よりもネスト深度が深い制御構文範囲を返す。
 	 *
 	 * @param depth
 	 * @return Area
 	 */
-	public ArrayList<Area> getDepthOverBrackets(int depth){
+	public ArrayList<Area> getDepthOverStatements(int depth){
 		ArrayList<Area> result = new ArrayList<Area>();
 
-		for(Area area : this.areasBracketCurly){
+		for(Area area : this.areasStatement){
 			if (area.getDepth() >= depth){
 				result.add(area);
 			}

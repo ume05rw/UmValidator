@@ -20,6 +20,7 @@ public class Messages extends NLS {
 	}
 
 	//設定画面用
+	public static String PREF_IS_EXEC_BY_SAVING;
 	public static String PREF_IS_OUT_CONSOLE;
 	public static String PREF_IS_DETECT_MBSPACE;
 	public static String PREF_IS_DETECT_TAB;

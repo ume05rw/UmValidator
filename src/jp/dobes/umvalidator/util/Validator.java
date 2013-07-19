@@ -303,7 +303,7 @@ public class Validator {
 
 		//ネスト深度を検出
 		if (is_detent_nest_depth){
-			areas = ctr.getDepthOverBrackets(limit_nest_depth);
+			areas = ctr.getDepthOverStatements(limit_nest_depth);
 			for(Centrifuge.Area area : areas){
 				try {
 					this.buildMarker(file, Messages.ERRMSG_LIMIT_NEST_DEPTH,

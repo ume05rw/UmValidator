@@ -1,11 +1,13 @@
 package jp.dobes.umvalidator;
 
+import jp.dobes.umvalidator.preference.Initializer;
 import jp.dobes.umvalidator.util.Validator;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IExecutionListener;
 import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
@@ -27,6 +29,8 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 
 	//sharedのバリデータインスタンス
 	private static Validator validator;
+
+	private static IPreferenceStore prefStore;
 
 	/**
 	 * コンストラクタ
@@ -73,6 +77,7 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 		//System.out.println("Activator.earlyStartup");
 		Activator.validator = new Validator();
 		Activator.validator.refreshMarkers(true);
+		Activator.prefStore = Activator.getDefault().getPreferenceStore();
 
 		this.hookOnCommand("org.eclipse.ui.file.save");
 		this.hookOnCommand("org.eclipse.ui.file.saveAll");
@@ -104,9 +109,9 @@ public class Activator extends AbstractUIPlugin implements IStartup {
 
 			@Override
 			public void preExecute(String arg0, ExecutionEvent arg1) {
-				if (!Activator.validator.isWorking()){
-					Activator.validator.execMarking();
-				}
+				if (!Activator.prefStore.getBoolean(Initializer.IS_EXEC_BY_SAVING)) return;
+				if (Activator.validator.isWorking()) return;
+				Activator.validator.execMarking();
 			}
 		});
 	}

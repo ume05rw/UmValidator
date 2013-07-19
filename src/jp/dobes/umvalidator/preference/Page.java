@@ -34,10 +34,16 @@ public class Page extends FieldEditorPreferencePage implements IWorkbenchPrefere
 	 */
 	@Override
 	protected void createFieldEditors() {
-		//バリデート結果をコンソールに出力する。
+
+		//ファイル保存時に実行する。
 		addField(new BooleanFieldEditor(
-			Initializer.IS_OUT_CONSOLE, Messages.PREF_IS_OUT_CONSOLE, getFieldEditorParent()
+			Initializer.IS_EXEC_BY_SAVING, Messages.PREF_IS_EXEC_BY_SAVING, getFieldEditorParent()
 		));
+
+		////バリデート結果をコンソールに出力する。
+		//addField(new BooleanFieldEditor(
+		//	Initializer.IS_OUT_CONSOLE, Messages.PREF_IS_OUT_CONSOLE, getFieldEditorParent()
+		//));
 
 		//全角スペースを検出する。
 		addField(new BooleanFieldEditor(
@@ -94,7 +100,7 @@ public class Page extends FieldEditorPreferencePage implements IWorkbenchPrefere
 			Initializer.IS_DETECT_FUNCTION_LINES, Messages.PREF_IS_DETECT_FUNCTION_LINES, getFieldEditorParent()
 		));
 
-		//検出する関数の最大行数
+		//検出する最大行数
 		addField(new IntegerFieldEditor(
 			Initializer.LIMIT_FUNCTION_LINES, Messages.PREF_LIMIT_FUNCTION_LINES, getFieldEditorParent(), 3
 		));
