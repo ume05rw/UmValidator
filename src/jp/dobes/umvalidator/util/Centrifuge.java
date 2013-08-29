@@ -65,6 +65,14 @@ public class Centrifuge {
 		protected void addDepth(){
 			this.depth++;
 		}
+		public void dump(){
+			System.out.println(
+				"Type: " + this.getTypeString()
+				+ "  / Offset: " + this.getOffset()
+				+ "  / Length: " + this.getLength()
+				+ "  / Depath: " + this.getDepth()
+			);
+		}
 		public void dispose(){
 			this.offset = -1;
 			this.length = -1;
@@ -315,7 +323,6 @@ public class Centrifuge {
 	 */
 	private ArrayList<Area> getBracketCurlyAreas(){
 		ArrayList<Area> areas = new ArrayList<Area>();
-
 		@SuppressWarnings("unchecked")
 		ArrayList<Integer> startPoints = (ArrayList<Integer>) this.startBruckets.clone();
 		ArrayList<Integer> endPoints =  this.getStringIndexArray("}");
@@ -478,13 +485,12 @@ public class Centrifuge {
 			for(int i = 0; i < this.areasNotCode.size(); i++){
 				if (
 					(this.areasNotCode.get(i).getStart() <= offset)
-					&& (offset <= this.areasNotCode.get(i).getEnd())
+					&& (offset < this.areasNotCode.get(i).getEnd())
 				){
 					return false;
 				}
 			}
 		}
-
 		return true;
 	}
 

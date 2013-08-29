@@ -118,21 +118,21 @@ public class Validator {
 
 		//コード解析解析を行う。
 		Centrifuge ctr = new Centrifuge(doc.get());
-//		for(Area area : ctr.getAreas()){
-//			try {
-//				System.out.println(
-//					"Type: " + area.getTypeString()
-//					+ "  / Offset: " + area.getOffset()
-//					+ "  / Length: " + area.getLength()
-//					+ "  / Depath: " + area.getDepth()
-//					+ "  / Line: " + doc.getLineOfOffset(area.getOffset())
-//					+ "  / Value: 「" + doc.get().substring(area.getStart(), area.getEnd()) + "」"
-//				);
-//			} catch (BadLocationException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
+		for(Area area : ctr.getAreas()){
+			try {
+				System.out.println(
+					"Type: " + area.getTypeString()
+					+ "  / Offset: " + area.getOffset()
+					+ "  / Length: " + area.getLength()
+					+ "  / Depath: " + area.getDepth()
+					+ "  / Line: " + doc.getLineOfOffset(area.getOffset())
+					+ "  / Value: 「" + doc.get().substring(area.getStart(), area.getEnd()) + "」"
+				);
+			} catch (BadLocationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		//バリデータ処理の変数宣言
 		int tmpIdx;
